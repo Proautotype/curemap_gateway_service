@@ -1,0 +1,51 @@
+server:
+  port: 8091
+
+spring:
+  application:
+    name: gatewayserver
+  jmx:
+    enabled: false
+  cloud:
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: true
+    discovery:
+      enabled: true
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: "http://localhost:8090/realms/curemap/protocol/openid-connect/certs"
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:8070/eureka/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"   # expose all endpoints
+  endpoint:
+    gateway:
+      access:
+        enabled: true   # 👈 make gateway actuator visible
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: gatewayserver
+    description: "CureMap Gateway"
+    version: "1.0.0"
