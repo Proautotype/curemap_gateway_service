@@ -4,17 +4,60 @@ server:
 spring:
   application:
     name: gatewayserver
-  jmx:
-    enabled: false
   cloud:
     gateway:
       server:
         webflux:
           discovery:
             locator:
-              enabled: true
-    discovery:
-      enabled: true
+              enable: true
+              lower-case-service-id: true
+          routes:
+
+            - id: account-service
+              uri: lb://ACCOUNTS
+              predicates:
+                - Path=/accounts/**
+              filters:
+                - StripPrefix=1
+            - id: account-service-api-docs
+              uri: lb://ACCOUNTS
+              predicates:
+                - Path=/accounts/v3/api-docs/**
+              filters:
+                - RewritePath=/accounts/v3/api-docs/(?<path>.*), /v3/api-docs/$\{path}
+
+            - id: communication-service
+              uri: lb://communications
+              predicates:
+                - Path=/communications/**
+              filters:
+                - StripPrefix=1
+            - id: communication-service-api-docs
+              uri: lb://communications
+              predicates:
+                - Path=/communications/v3/api-docs/**
+              filters:
+                - RewritePath=/communications/v3/api-docs/(?<path>.*), /v3/api-docs/$\{path}
+
+          default-filters:
+            - name: Retry
+              args:
+                retries: 3
+                statuses: BAD_GATEWAY,SERVICE_UNAVAILABLE,GATEWAY_TIMEOUT
+                methods: GET,POST,PUT,DELETE
+            - name: AddResponseHeader
+              args:
+                name: Access-Control-Allow-Origin
+                value: "*"
+            - name: AddResponseHeader
+              args:
+                name: Access-Control-Allow-Methods
+                value: "*"
+            - name: AddResponseHeader
+              args:
+                name: Access-Control-Allow-Headers
+                value: "*"
 
   security:
     oauth2:
@@ -49,3 +92,15 @@ info:
     name: gatewayserver
     description: "CureMap Gateway"
     version: "1.0.0"
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    urls:
+      - name: Account Service
+        url: /accounts/v3/api-docs
+        displayName: Account Service API
+      - name: Communication Service
+        url: /communications/v3/api-docs
+        displayName: Communication Service API
