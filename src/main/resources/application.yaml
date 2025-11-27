@@ -40,6 +40,19 @@ spring:
               filters:
                 - RewritePath=/communications/v3/api-docs/(?<path>.*), /v3/api-docs/$\{path}
 
+            - id: journal-service
+              uri: lb://journals
+              predicates:
+                - Path=/journals/**
+              filters:
+                - StripPrefix=1
+            - id: journals-service-api-docs
+              uri: lb://journals
+              predicates:
+                - Path=/journals/v3/api-docs/**
+              filters:
+                - RewritePath=/journals/v3/api-docs/(?<path>.*), /v3/api-docs/$\{path}
+
           default-filters:
             - name: Retry
               args:
@@ -104,3 +117,6 @@ springdoc:
       - name: Communication Service
         url: /communications/v3/api-docs
         displayName: Communication Service API
+      - name: Journal Service
+        url: /journals/v3/api-docs
+        displayName: Journal Service API

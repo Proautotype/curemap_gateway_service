@@ -11,7 +11,7 @@
     <groupId>com.custard</groupId>
     <artifactId>gatewayserver</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>gatewayserver</name>
+    <name>curemap-gatewayserver</name>
     <description>Edge Server for curemap microservices</description>
     <url/>
     <licenses>
@@ -116,6 +116,25 @@
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-lib</artifactId>
                 <version>3.1.2</version>
+            </plugin>
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>3.4.5</version>
+                <configuration>
+                    <from>
+                        <image>maven:3.9.4-eclipse-temurin-21</image>
+                    </from>
+                    <to>
+                        <image>winstyngyen/${project.name}:v1</image>
+                    </to>
+                    <container>
+                        <mainClass>com.generis.Application</mainClass>
+                        <ports>
+                            <port>8080</port>
+                        </ports>
+                    </container>
+                </configuration>
             </plugin>
         </plugins>
     </build>

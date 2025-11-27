@@ -22,10 +22,8 @@ public class SecurityConfig {
     ) {
         serverHttpSecurity.authorizeExchange(exchanges ->
                 exchanges
-                        .pathMatchers("/accounts/api/v1/create").permitAll()
-                        .pathMatchers("/accounts/api/v1/login").permitAll()
+                        .pathMatchers("/accounts/api/v1/auth/**").permitAll()
                         .pathMatchers("/accounts/api/v1/ping").permitAll()
-                        .pathMatchers("/accounts/api/v1/refreshToken").permitAll()
                         // internal
                         .pathMatchers(
                                 "/ping",
@@ -52,8 +50,17 @@ public class SecurityConfig {
                                 "/communications/swagger-resources/**"
                         ).permitAll()
 
+                        // journals service opened swagger endpoints
+                        .pathMatchers("/journals/swagger-ui/**",
+                                "/journals/v3/api-docs/**",
+                                "/journals/v3/api-docs/**",
+                                "/journals/webjars/**",
+                                "/journals/swagger-resources/**"
+                        ).permitAll()
+
                         .pathMatchers("/accounts/**").authenticated()
                         .pathMatchers("/communications/**").authenticated()
+                        .pathMatchers("/journals/**").authenticated()
 
         ).oauth2ResourceServer(oAuth2ResourceServerSpec ->
                 oAuth2ResourceServerSpec.jwt(jwtSpec ->
